@@ -1,4 +1,5 @@
-﻿using System.Runtime.Versioning;
+﻿using System;
+using System.Runtime.Versioning;
 using Cake.Core;
 
 namespace Cake.Testing
@@ -14,11 +15,25 @@ namespace Cake.Testing
         public FrameworkName TargetFramework { get; set; }
 
         /// <summary>
+        /// Gets a value indicating whether we're running on CoreClr.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if we're runnning on CoreClr; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsCoreClr { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="FakeRuntime"/> class.
         /// </summary>
         public FakeRuntime()
         {
+#if NETCORE
+            TargetFramework = new FrameworkName(".NETStandard,Version=v1.6");
+            IsCoreClr = true;
+#else
             TargetFramework = new FrameworkName(".NETFramework,Version=v4.5");
+            IsCoreClr = false;
+#endif
         }
     }
 }

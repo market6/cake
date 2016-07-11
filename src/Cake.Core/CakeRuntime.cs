@@ -17,15 +17,31 @@ namespace Cake.Core
         public FrameworkName TargetFramework { get; private set; }
 
         /// <summary>
+        /// Gets a value indicating whether we're running on CoreClr.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if we're runnning on CoreClr; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsCoreClr
+        {
+            get
+            {
+#if NETCORE
+                return true;
+#else
+                return false;
+#endif
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="CakeRuntime"/> class.
         /// </summary>
         public CakeRuntime()
         {
 #if NETCORE
             TargetFramework = new FrameworkName(".NETStandard,Version=v1.6");
-#elif NET462
-            TargetFramework = new FrameworkName(".NETFramework,Version=v4.6.2");
-#elif NET45
+#else
             TargetFramework = new FrameworkName(".NETFramework,Version=v4.5");
 #endif
         }
