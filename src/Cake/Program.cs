@@ -63,11 +63,9 @@ namespace Cake
                     builder.Registry.RegisterModule(new ScriptingModule(options));
                     builder.Update(container);
 
-#if !NETCORE
                     // Load all modules.
                     var loader = container.Resolve<ModuleLoader>();
                     loader.LoadModules(container, options);
-#endif
 
                     // Resolve and run the application.
                     var application = container.Resolve<CakeApplication>();
