@@ -9,18 +9,24 @@ using Cake.Core.Diagnostics;
 
 namespace Cake.Scripting.XPlat
 {
-    public class XPlatScriptEngine : IScriptEngine
+    internal sealed class XPlatScriptEngine : IScriptEngine
     {
+        private readonly CakeOptions _options;
         private readonly ICakeLog _log;
 
-        public XPlatScriptEngine(ICakeLog log)
+        public XPlatScriptEngine(CakeOptions options, ICakeLog log)
         {
+            _options = options;
             _log = log;
         }
 
         public IScriptSession CreateSession(IScriptHost host, IDictionary<string, string> arguments)
         {
-            return new XPlatScriptSession(host, _log);
+            if (_options.PerformDebug)
+            {
+                return new DebugXPlatScriptSession(host, _log);
+            }
+            return new DefaultXPlatScriptSession(host, _log);
         }
     }
 }

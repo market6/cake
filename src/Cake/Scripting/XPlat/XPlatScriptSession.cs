@@ -9,13 +9,10 @@ using Cake.Core.IO;
 using Cake.Core.Scripting;
 using System.Collections.Generic;
 using Cake.Core.Diagnostics;
-using Cake.Scripting.Roslyn;
-using System.Linq;
-using Microsoft.CodeAnalysis.CSharp.Scripting;
 
 namespace Cake.Scripting.XPlat
 {
-    public class XPlatScriptSession : IScriptSession
+    internal abstract class XPlatScriptSession : IScriptSession
     {
         private readonly IScriptHost _host;
         private readonly ICakeLog _log;
@@ -23,7 +20,22 @@ namespace Cake.Scripting.XPlat
         private readonly HashSet<Assembly> _references;
         private readonly HashSet<string> _namespaces;
 
-        public XPlatScriptSession(IScriptHost host, ICakeLog log)
+        public HashSet<FilePath> ReferencePaths
+        {
+            get { return _referencePaths; }
+        }
+
+        public HashSet<Assembly> References
+        {
+            get { return _references; }
+        }
+
+        public HashSet<string> Namespaces
+        {
+            get { return _namespaces; }
+        }
+
+        protected XPlatScriptSession(IScriptHost host, ICakeLog log)
         {
             _host = host;
             _log = log;
@@ -61,21 +73,7 @@ namespace Cake.Scripting.XPlat
             }
         }
 
-        public void Execute(Script script)
-        {
-            // Generate the script code.
-            var generator = new RoslynCodeGenerator();
-            var code = generator.Generate(script);
-
-            // Create the script options dynamically.
-            var options = Microsoft.CodeAnalysis.Scripting.ScriptOptions.Default
-                .WithImports(_namespaces)
-                .AddReferences(_references)
-                .AddReferences(_referencePaths.Select(r => r.FullPath));
-
-            _log.Verbose("Compiling build script...");
-            CSharpScript.EvaluateAsync(code, options, _host).Wait();
-        }
+        public abstract void Execute(Script script);
     }
 }
 #endif
