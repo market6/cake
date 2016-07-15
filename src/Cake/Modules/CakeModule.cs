@@ -28,10 +28,8 @@ namespace Cake.Modules
             registry.RegisterType<CakeConsole>().As<IConsole>().Singleton();
 
             // Modules
-#if !NETCORE
             registry.RegisterType<ModuleSearcher>().Singleton();
             registry.RegisterType<ModuleLoader>().Singleton();
-#endif
 
             // Configuration
             registry.RegisterType<CakeConfigurationProvider>().Singleton();
